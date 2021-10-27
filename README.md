@@ -1,2 +1,1 @@
-# maztov-exercise
-
+# Apache & HAProxy basic automation

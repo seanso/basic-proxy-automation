@@ -5,7 +5,7 @@
 
 - name: Copy httpd configuration file
   template:
-    src: apache.yml
+    src: httpd.conf.j2
     dest: /etc/httpd/conf/httpd.conf
 
 - name: Create application directory
