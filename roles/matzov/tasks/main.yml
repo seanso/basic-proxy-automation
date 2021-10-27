@@ -1,0 +1,7 @@
+- name: Configure HAproxy
+  include_tasks: haproxy.yml
+  when: inventory_hostname in groups['haproxy']
+
+- name: Configure apache
+  include_tasks: apache.yml
+  when: inventory_hostname in groups['apache']

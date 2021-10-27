@@ -1,0 +1,20 @@
+- name: Install haproxy
+  yum:
+    name: haproxy
+    state: present
+
+- name: Copy configuration file
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+
+- name: Start and enable haproxy
+  systemd:
+    name: haproxy
+    state: started
+    enabled: yes
+
+- name: Copy the pem certificate to the correct location
+  copy:
+    src: app.med.one.pem
+    dest: /etc/ssl/certs/server.pem

@@ -1,0 +1,9 @@
+[haproxy]
+192.168.10.124
+
+[apache]
+192.168.10.58 ansible_hostname=web1
+192.168.10.83 ansible_hostname=web2
+
+[all:vars]
+ansible_user=root

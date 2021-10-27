@@ -1,0 +1,58 @@
+- name: Install apache
+  yum:
+    name: httpd
+    state: present
+
+- name: Copy httpd configuration file
+  template:
+    src: apache.yml
+    dest: /etc/httpd/conf/httpd.conf
+
+- name: Create application directory
+  file:
+    path: /opt/application
+    state: directory
+
+- name: Copy html file
+  template:
+    src: app.htmk.j2
+    dest: /opt/application/app.html
+
+# Configure ssl
+- name: Install mod ssl
+  yum:
+    name: mod_ssl
+    state: present
+
+- name: Replace certificate location
+  lineinfile: 
+    path: /etc/httpd/conf.d/ssl.conf 
+    regexp: '^(.*)SSLCertificateFile(.*)$' 
+    line: 'SSLCertificateFile /etc/pki/tls/certs/{{ ansible_hostname }}.med.one.crt'
+
+- name: Replace key location
+  lineinfile: 
+    path: /etc/httpd/conf.d/ssl.conf 
+    regexp: '^(.*)SSLCertificateKeyFile(.*)$' 
+    line: 'SSLCertificateKeyFile /etc/pki/tls/private/{{ ansible_hostname }}.med.one.key'
+
+- name: Replace servername in ssl config file
+  lineinfile: 
+    path: /etc/httpd/conf.d/ssl.conf 
+    regexp: '^(.*)#ServerName(.*)$' 
+    line: 'ServerName {{ ansible_hostname }}.med.one:443'
+
+- name: Copy the certificate to the correct location
+  copy:
+    src: "{{ ansible_hostname }}.med.one.crt"
+    dest: /etc/pki/tls/certs/
+
+- name: Copy the key to the correct location
+  copy:
+    src: "{{ ansible_hostname }}.med.one.key"
+    dest: /etc/pki/tls/private/
+
+- name: start httpd
+  systemd:
+    name: httpd
+    state: restarted
